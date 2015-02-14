@@ -158,11 +158,11 @@ int main(int argc, char *argv[]) {
         case 'w':
             if (rw == 0) rw = 2;
             break;
-        case 'o':
+        case 'f':
             fname = optarg;
             break;
         case '?':
-            if (optopt == 'c')
+            if (optopt == 'f')
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
             else if (isprint(optopt))
                 fprintf(stderr, "Unknown option '%c'.\n", optopt);
