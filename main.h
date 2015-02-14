@@ -1,11 +1,13 @@
 #ifndef _main_h
 #define _main_h
 
-#include <stdlib.h>
+#include <errno.h>
 #include <math.h>
 #include <stdio.h>
-#include <errno.h>
+#include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
+#include <ctype.h>
 
 #define PNG_DEBUG 3
 #include <png.h>

@@ -136,23 +136,55 @@ void str2png(char *filename, char *txt) {
     return;
 }
 
+void printhelp() {
+    printf("usage: %s -rw -o filename\n", proc);
+}
+
 int main(int argc, char *argv[]) {
     char *buf, chunk[BUF_SIZE];
-    size_t bufs = 1;
-    char *msg;
+    char *msg, *fname = NULL;
+    char c;
     proc = argv[0];
+    size_t bufs = 1;
+    unsigned char rw;
 
-    if (argc == 1) {
-        printf("usage: %s read [file]\t-- read message from image\n", proc);
-        printf("usage: %s write [file]\t-- write stdin to image\n", proc);
-        return 0;
+    opterr = 0;
+
+    while ((c = getopt(argc, argv, "rwo:")) != -1) {
+        switch (c) {
+        case 'r':
+            if (rw == 0) rw = 1;
+            break;
+        case 'w':
+            if (rw == 0) rw = 2;
+            break;
+        case 'o':
+            fname = optarg;
+            break;
+        case '?':
+            if (optopt == 'c')
+                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+            else if (isprint(optopt))
+                fprintf(stderr, "Unknown option '%c'.\n", optopt);
+            else 
+                fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
+            break;
+        default:
+            abort();
+        }
     }
 
-    if (strcmp(argv[1],"read") == 0 && argc == 3) {
-        msg = png2str(argv[2]);
+    if (fname == NULL) {
+        fprintf(stderr, "No output file specified.\n");
+        return EXIT_FAILURE;
+    }
+
+    if (rw == 1) {
+        msg = png2str(fname);
         printf("%s\n", msg);
         free(msg);
-    } else if (strcmp(argv[1],"write") == 0 && argc == 3) {
+    } else if (rw == 2) {
+        // read from stdin
         buf = malloc(sizeof(char)*BUF_SIZE);
         buf[0] = 0;
         while (fgets(chunk, BUF_SIZE, stdin)) {
@@ -160,8 +192,12 @@ int main(int argc, char *argv[]) {
             buf = realloc(buf, bufs);
             strcat(buf,chunk);
         }
-        str2png(argv[2], buf);
+
+        str2png(fname, buf);
         free(buf);
+    } else {
+        printhelp();
     }
+
     return 0;
 }
