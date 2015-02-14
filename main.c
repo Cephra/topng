@@ -137,7 +137,7 @@ void str2png(char *filename, char *txt) {
 }
 
 void printhelp() {
-    printf("usage: %s -rw -o filename\n", proc);
+    printf("usage: %s -rw -f filename\n", proc);
 }
 
 int main(int argc, char *argv[]) {
@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "rwo:")) != -1) {
+    while ((c = getopt(argc, argv, "rwf:")) != -1) {
         switch (c) {
         case 'r':
             if (rw == 0) rw = 1;
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (fname == NULL) {
+    if (rw != 0 && fname == NULL) {
         fprintf(stderr, "No output file specified.\n");
         return EXIT_FAILURE;
     }
